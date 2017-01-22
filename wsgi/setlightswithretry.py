@@ -4,6 +4,7 @@ import json
 import time
 import argparse
 import bghive
+import threading
 
 class LightSetter(object):
     def __init__(self, node, attributes, timeout):
@@ -40,6 +41,16 @@ class LightSetter(object):
     def printAttributes(self):
         node = self.__session.get_node(self.__node)
         print json.dumps(node.attributes, indent=2)
+
+class ThreadedLightSetter(threading.Thread):
+    def __init__(self, *args, **kwargs):
+        super(ThreadedLightSetter, self).__init__()
+        self.setter = LightSetter(*args, **kwargs)
+
+    def run(self):
+        self.setter.run()
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Set attributes of a hive device")
