@@ -1,4 +1,5 @@
 import setlightswithretry
+import heatercontrol
 from flask import Flask, request
 app = Flask("myiot")
 
@@ -18,6 +19,8 @@ def sunrisesunset():
     setter = setlightswithretry.ThreadedLightSetter(node, attributes, 18000)
     setter.start()
     return "OK\n"
+
+heatercontrol.start()
 
 if __name__ == "__main__":
     app.run()
