@@ -2,11 +2,7 @@ import setlightswithretry
 import heatercontrol
 from flask import Flask, request
 
-def startApp():
-    heatercontrol.start()
-    return Flask("myiot")
-
-app = startApp()
+app = Flask("myiot")
 
 @app.route("/sunrisesunset", methods=["POST"])
 def sunrisesunset():
@@ -25,4 +21,5 @@ def sunrisesunset():
     return "OK\n"
 
 if __name__ == "__main__":
-    app.run()
+    heatercontrol.start()
+    app.run("0.0.0.0", 1025)
