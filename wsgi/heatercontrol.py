@@ -73,7 +73,7 @@ class ButtonWatcher(threading.Thread):
                     print "Warning, button action failed: %s" % str(e)
 
         while True:
-            sniff(prn=arp_action, filter="arp", store=0, count=10)
+            sniff(prn=arp_action, filter="arp", store=0, count=1000)
 
 def start():
     controller = HeaterController("Conservatory", 300, 24)
