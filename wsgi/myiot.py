@@ -2,6 +2,10 @@ import setlightswithretry
 import heatercontrol
 from flask import Flask, request
 import waitress
+import logging
+import sys
+from requestlogger import WSGILogger, ApacheFormatter
+
 
 app = Flask("myiot")
 
@@ -25,5 +29,14 @@ def sunrisesunset():
     return "OK\n"
 
 if __name__ == "__main__":
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
+
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    root.addHandler(ch)
     heatercontrol.start()
-    waitress.serve(app, host='0.0.0.0', port=1025)
+    loggingapp = WSGILogger(app, [ch], ApacheFormatter())
+    waitress.serve(loggingapp, host='0.0.0.0', port=1025)
