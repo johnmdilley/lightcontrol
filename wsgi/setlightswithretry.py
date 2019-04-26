@@ -17,6 +17,10 @@ class LightSetter(object):
         self.__timeout = timeout
         self.__session = bghive.Session(self.__username, self.__password)
 
+    def printNodes(self):
+        for i in self.__session.nodes.keys():
+            print "%s (%s)" % (i, repr(i))
+
     def __attempt(self):
         node = self.__session.get_node(self.__node)
         for a in self.__attributes:
@@ -61,7 +65,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     attributes = dict([x.split("=") for x in args.attributes])
     setter = LightSetter(args.node, attributes, args.timeout)
-    if args.dump:
+    if not args.node:
+        setter.printNodes()
+    elif args.dump:
         setter.printAttributes()
     else:
         setter.run()

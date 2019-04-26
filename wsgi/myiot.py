@@ -9,6 +9,35 @@ import dtgweather
 
 app = Flask("myiot")
 
+@app.route("/scarletroom", methods=["POST", "GET"])
+def scarletroom():
+    print "Running scarletroom"
+    myform = request.args if request.method == "GET" else request.form
+    print myform
+    if myform['key'] != "mhmlw":
+        raise Exception("Invalid key")
+    if myform['action'] == "night":
+        attributes = {
+            "brightness": 5,
+            "hsvSaturation": 99,
+            "hsvValue": 5,
+            "hsvHue": 293,
+            "colourMode": "COLOUR",
+            "state": "ON"
+        }
+    elif myform['action'] == "day":
+        attributes = {
+            "brightness": 100,
+            "colourMode": "TUNABLE",
+            "colourTemperature": 3500,
+            "state": "ON"
+        }
+    elif myform['action'] == "off":
+        attributes = {"state": "OFF"}
+    setter = setlightswithretry.ThreadedLightSetter("Scarlet Room", attributes, 0)
+    setter.start()
+    return "OK\n"
+
 @app.route("/sunrisesunset", methods=["POST","GET"])
 def sunrisesunset():
     print "Running sunrisesunset"
