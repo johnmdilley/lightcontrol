@@ -5,24 +5,34 @@ import waitress
 import logging
 import sys
 from requestlogger import WSGILogger, ApacheFormatter
-
+import dtgweather
 
 app = Flask("myiot")
 
-@app.route("/sunrisesunset", methods=["POST"])
+@app.route("/sunrisesunset", methods=["POST","GET"])
 def sunrisesunset():
-    if request.form['time'] == "sunrise":
+    print "Running sunrisesunset"
+    myform = request.args if request.method == "GET" else request.form
+    print myform
+    if myform['key'] != "mhmlw":
+        raise Exception("Invalid key")
+    if myform['time'] == "sunrise":
         node = "Bedroom"
         attributes = {"brightness": 100, "colourTemperature": 5000}
         timeout = 18000
-    elif request.form['time'] == "sunset":
+    elif myform['time'] == "sunset":
         node = "Bedroom"
         attributes = {"brightness": 70, "colourTemperature": 2900}
         timeout = 18000
-    elif request.form['time'] == "coldafternoon":
-        node = "Conservatory"
-        attributes = {"state": "ON"}
-        timeout = 300
+    elif myform['time'] == "afternoon":
+        if dtgweather.get_temperature() < 10: 
+            node = "Conservatory"
+            attributes = {"state": "ON"}
+            timeout = 300
+        else:
+            return "Too warm\n"
+    else:
+        raise Exception("Unknown time")
 
     setter = setlightswithretry.ThreadedLightSetter(node, attributes, timeout)
     setter.start()
