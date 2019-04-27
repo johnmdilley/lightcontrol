@@ -29,7 +29,7 @@ def scarletroom():
         attributes = {
             "brightness": 100,
             "colourMode": "TUNABLE",
-            "colourTemperature": 3500,
+            "colourTemperature": 2900,
             "state": "ON"
         }
     elif myform['action'] == "off":

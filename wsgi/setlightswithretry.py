@@ -23,9 +23,8 @@ class LightSetter(object):
 
     def __attempt(self):
         node = self.__session.get_node(self.__node)
-        for a in self.__attributes:
-            print "Attempting to set %s=%s on %s" % (a, self.__attributes[a], self.__node)
-            node.set_attribute(a, self.__attributes[a])
+        print "Attempting to set %s on %s" % (self.__attributes, self.__node)
+        node.set_attributes(self.__attributes)
     
     def run(self):
         timeout = time.time() + self.__timeout
